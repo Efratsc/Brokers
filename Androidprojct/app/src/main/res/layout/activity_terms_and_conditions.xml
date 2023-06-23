@@ -1,0 +1,28 @@
+<!-- activity_terms_and_conditions.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Terms and conditions text view -->
+    <TextView
+        android:id="@+id/tvTermsAndConditions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/terms_and_conditions_content" />
+
+    <!-- Accept terms checkbox -->
+    <CheckBox
+        android:id="@+id/checkboxAcceptTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/accept_terms" />
+
+    <!-- Continue button -->
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/continue_label" />
+
+</LinearLayout>

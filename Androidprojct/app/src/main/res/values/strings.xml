@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Broker</string>
+    <string name="heading_one">Connecting peoples</string>
+    <string name="heading_two">Make your life easy</string>
+    <string name="heading_three">Get services quickly</string>
+    <string name="heading_four">Reasonable price</string>
+    <string name="description">Connecting Service Providers and Seekers through our Broker App</string>
+    <string name="description_two">Our app can make life easy by providing convenience, time-saving, cost-effective, easy-to-use,
+        real-time updates, and secure features for managing investments.</string>
+    <string name="description_three">Our app can make life easy by providing convenience, time-saving, cost-effective, easy-to-use,
+        real-time updates, and secure features for managing investments.</string>
+    <string name="description_four">Our app can make life easy by providing convenience, time-saving, cost-effective, easy-to-use,
+        real-time updates, and secure features for managing investments.</string>
+    <string name="menu_home">home</string>
+    <string name="accept_terms">I have read and accept the Terms and Conditions</string>
+    <string name="continue_label">Continue</string>
+
+    <string name="terms_and_conditions_content">By clicking the "Connect" button, you agree to the following terms and conditions:
+
+1. A fee of 100 Birr will be deducted from your account immediately upon clicking the "Connect" button. This fee covers the cost of facilitating the connection and supporting the platform.
+2. The deducted amount is non-refundable under any circumstances. Once the deduction is made, it cannot be reversed or refunded.
+3. It is your responsibility to ensure that you have sufficient funds in your account to cover the transaction. Insufficient funds may result in the connection request being declined.
+4. The connection is solely between you and the other user. The platform does not guarantee the outcome of the connection or assume any responsibility for the behavior or actions of the other user.
+5. You understand that the platform serves as a means to connect users and does not endorse, verify, or validate the information provided by other users. It is your responsibility to exercise caution and judgment when interacting with other users.
+6. The platform is not liable for any disputes, conflicts, or disagreements that may arise between you and the other user. You agree to resolve any such issues independently and hold the platform harmless from any claims or damages.
+7. The platform reserves the right to suspend or terminate your account if you violate the terms and conditions or engage in any fraudulent or malicious activities.
+8. The platform may update or modify these terms and conditions from time to time. It is your responsibility to review and comply with the latest version of the terms.
+
+Please carefully read and understand these terms and conditions before proceeding. If you do not agree to these terms, please refrain from clicking the "Connect" button.
+</string>
+    <string name="menu_service">service</string>
+    <string name="menu_connection">connection</string>
+    <string name="menu_profile">profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

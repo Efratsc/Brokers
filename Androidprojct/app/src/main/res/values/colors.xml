@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_500">#9C27B0</color>
+    <color name="purple_700">#7B1FA2</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="purple_200">#AB47BC</color>
+    <color name="colorPrimaryDark">#FF0000</color>
+    <color name="colorFormBackground">#FFFFFF</color>
+    <color name="teal_700">#00796B</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background">#F0F4F3</color>
+    <color name="statusBar">#50C2C9</color>
+    <color name="buttontext">#50C2C9</color>
+    <color name="inactive">#C4C4C4</color>
+    <color name="active">#50C2C9</color>
+    <color name="blue">#0000FF</color>
+    <color name="purple">#A020F0</color>
+    <color name="light_grey">#d3d3d3</color>
+    <color name="bottom_nav_icon_color">#000000</color>
+    <color name="bottom_nav_text_color">#000000</color>
+    <color name="shadowColor">#2E2E2E</color>
+    <color name="BackBottColor">#04e1e8</color>
+    <color name="CircleColor">#fff</color>
+    <color name="CountBackColor">#F45E0B</color>
+    <color name="CountTextColor">#2fff</color>
+    <color name="defaultIconColor">#F6F6F6</color>
+</resources>

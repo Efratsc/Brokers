@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="service_options_array">
+        <item>Maid</item>
+        <item>Security</item>
+        <item>Tutor</item>
+        <item>Housing</item>
+    </string-array>
+</resources>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:textSize="24sp"
+        android:textColor="#2196F3"
+        android:textAlignment="center"
+        android:layout_marginBottom="24dp" />
+
+
+
+
+    <!-- First Name EditText -->
+    <EditText
+        android:id="@+id/edit_first_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_title"
+        android:hint="First Name"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Last Name EditText -->
+    <EditText
+        android:id="@+id/edit_last_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_first_name"
+        android:hint="Last Name"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Phone Number EditText -->
+    <EditText
+        android:id="@+id/edit_phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_last_name"
+        android:hint="Phone Number"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Kebele EditText -->
+    <EditText
+        android:id="@+id/edit_kebele"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_phone_number"
+        android:hint="Kebele"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Woreda EditText -->
+    <EditText
+        android:id="@+id/edit_woreda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_kebele"
+        android:hint="Woreda"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+
+
+    <!-- Email EditText -->
+    <EditText
+        android:id="@+id/edit_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_woreda"
+        android:hint="Email"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp" />
+
+
+
+    <!-- Property EditText -->
+
+    <EditText
+        android:id="@+id/edit_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_email"
+        android:hint="user name"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_username"
+        android:hint="password"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+    <!-- Sign Up Button -->
+    <Button
+        android:id="@+id/button_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_password"
+        android:text="Sign Up"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Already have an account text -->
+    <TextView
+        android:id="@+id/text_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_signup"
+        android:text="Already have an account? Log In"
+        android:textSize="16sp"
+        android:onClick="loginClick"
+        android:textColor="#2196F3"
+        android:textAlignment="center"
+        android:layout_marginTop="24dp" />
+
+</RelativeLayout>
