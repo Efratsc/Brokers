@@ -13,19 +13,17 @@ public class PostModel {
     @SerializedName("service_id")
     private int service_id;
 
-   /* @SerializedName("post_image")
-    private byte[] post_image;
+    @SerializedName("post_image")
+    private String post_image;
 
-*/
 
-    public PostModel(int id, int user_id,String post_text,int service_id, byte[] post_image) {
+
+    public PostModel(int id, int user_id,String post_text,int service_id, String post_image) {
         this.id = id;
         this.user_id=user_id;
         this.post_text = post_text;
         this.service_id=service_id;
-
-        // this.post_image = post_image;
-
+         this.post_image = post_image;
     }
 
     public int getId() {
@@ -60,14 +58,14 @@ public class PostModel {
         this.post_text = post_text;
     }
 
-    /*public byte[] getPost_image() {
+    public String getPost_image() {
         return post_image;
     }
 
-    public void setPost_image(byte[] post_image) {
+    public void setPost_image(String post_image) {
         this.post_image = post_image;
     }
-*/
+
 
 
 }

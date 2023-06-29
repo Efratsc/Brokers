@@ -9,9 +9,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import retrofit2.Call;
@@ -160,7 +165,9 @@ public class PostActivity extends AppCompatActivity {
 
         Spinner serviceSpinner = findViewById(R.id.serviceSpinner);
         String selectedService = serviceSpinner.getSelectedItem().toString();
+        ImageView postImage = findViewById(R.id.pickedimage);
         int service_id = 0;
+
         switch (selectedService) {
             case "Maid":
                 service_id = 1;
@@ -176,16 +183,22 @@ public class PostActivity extends AppCompatActivity {
                 break;
         }
 
-// Convert the image byte array to Base64 encoded string
-        byte[] imageBytes = null;
-        /*String base64Image = null;
+        Drawable drawableImage = postImage.getDrawable();
+        Bitmap bitmapImage = null;
+        String base64Image = null;
 
-        if (imageBytes != null) {
+        if (drawableImage != null) {
+            bitmapImage = ((BitmapDrawable) drawableImage).getBitmap();
+        }
+
+        if (bitmapImage != null) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] imageBytes = byteArrayOutputStream.toByteArray();
             base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         }
-*/
-// Create a new PostModel instance with the updated code
-        PostModel newPost = new PostModel(0, userId, postText, service_id, imageBytes);
+
+        PostModel newPost = new PostModel(0, userId, postText, service_id, base64Image);
 
         Call<PostModel> call = RetrofitClient.getInstance().getApi().createPost(newPost);
         call.enqueue(new Callback<PostModel>() {
@@ -218,6 +231,7 @@ public class PostActivity extends AppCompatActivity {
                     } else {
                         // Other error cases
                         String errorMessage = "An error occurred. Please try again.";
+                        Log.e("API Error", errorMessage);
                         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -229,6 +243,7 @@ public class PostActivity extends AppCompatActivity {
                 // ...
             }
         });
+
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

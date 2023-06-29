@@ -93,12 +93,8 @@ public class SharedPreferenceManager {
             int userId = sharedPreferences.getInt("post_user_id_" + i, -1);
             String postText = sharedPreferences.getString("post_text_" + i, null);
             int serviceId = sharedPreferences.getInt("post_service_id_" + i, -1);
-            String base64Image = sharedPreferences.getString("post_image_" + i, null);
-            byte[] postImage = null;
+            String postImage = sharedPreferences.getString("post_image_" + i, null);
 
-            if (base64Image != null) {
-                postImage = Base64.decode(base64Image, Base64.DEFAULT);
-            }
 
             PostModel postModel = new PostModel(postId, userId, postText, serviceId, postImage);
             postList.add(postModel);
