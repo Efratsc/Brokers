@@ -28,14 +28,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.androidprojct.models.PostModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -159,13 +167,13 @@ public class PostActivity extends AppCompatActivity {
 */
 
     private void createPost() {
+        // Get the post text, user ID, and selected service
         EditText postEditText = findViewById(R.id.editpost);
         String postText = postEditText.getText().toString();
         int userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
 
         Spinner serviceSpinner = findViewById(R.id.serviceSpinner);
         String selectedService = serviceSpinner.getSelectedItem().toString();
-        ImageView postImage = findViewById(R.id.pickedimage);
         int service_id = 0;
 
         switch (selectedService) {
@@ -183,67 +191,78 @@ public class PostActivity extends AppCompatActivity {
                 break;
         }
 
-        Drawable drawableImage = postImage.getDrawable();
-        Bitmap bitmapImage = null;
-        String base64Image = null;
+        // Get the image file path
+        String imagePath = "C:/Users/efrat/OneDrive/Documents/api-node/Uploads"; // Replace with the actual image file path
 
-        if (drawableImage != null) {
-            bitmapImage = ((BitmapDrawable) drawableImage).getBitmap();
-        }
+        // Upload the image file to the folder
+        File imageFile = new File(imagePath);
+        String fileName = imageFile.getName();
 
-        if (bitmapImage != null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-            base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        }
+        OkHttpClient httpClient = new OkHttpClient();
 
-        PostModel newPost = new PostModel(0, userId, postText, service_id, base64Image);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("post_image", fileName, RequestBody.create(MediaType.parse("image/jpeg"), imageFile))
+                .build();
 
-        Call<PostModel> call = RetrofitClient.getInstance().getApi().createPost(newPost);
-        call.enqueue(new Callback<PostModel>() {
-            @Override
-            public void onResponse(Call<PostModel> call, Response<PostModel> response) {
-                if (response.isSuccessful()) {
-                    PostModel createdPost = response.body();
-                    // Handle the created post as needed
-                    // ...
-                } else {
-                    // Handle the error case
-                    if (response.code() == 400) {
-                        // Bad Request
-                        String errorMessage = "Invalid request. Please check your input.";
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    } else if (response.code() == 401) {
-                        // Unauthorized
-                        String errorMessage = "You are not authorized to perform this action.";
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        // You can also redirect the user to the login screen if needed
-                        // startActivity(new Intent(PostActivity.this, LoginActivity.class));
-                    } else if (response.code() == 404) {
-                        // Not Found
-                        String errorMessage = "Requested resource not found.";
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    } else if (response.code() == 500) {
-                        // Internal Server Error
-                        String errorMessage = "Internal server error. Please try again later.";
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Other error cases
-                        String errorMessage = "An error occurred. Please try again.";
-                        Log.e("API Error", errorMessage);
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        Request request = new Request.Builder()
+                .url("http://localhost:3000/image")
+                .post(requestBody)
+                .build();
+
+        try (okhttp3.Response response = httpClient.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                // Image upload successful
+                // Store the file name in the database
+                String imageName = fileName;
+
+                // Create the new post object
+                PostModel newPost = new PostModel(0, userId, postText, service_id, imageName);
+
+                // Call the API to create the post
+                Call<PostModel> call = RetrofitClient.getInstance().getApi().createPost(newPost);
+                call.enqueue(new Callback<PostModel>() {
+                    @Override
+                    public void onResponse(Call<PostModel> call, Response<PostModel> response) {
+                        if (response.isSuccessful()) {
+                            PostModel createdPost = response.body();
+                            int postId = createdPost.getId(); // Get the ID of the created post
+                            String postText = createdPost.getPost_text(); // Get the text of the created post
+                            String imageName = createdPost.getPost_image(); // Get the image name of the created post
+
+                            // Example: Display a toast message with the post details
+                            String message = "Post created with ID: " + postId + "\nText: " + postText + "\nImage: " + imageName;
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                            // Example: Refresh the post list to display the new post
+                            //refreshPostList();
+
+                            // Example: Reset the input fields
+                            postEditText.setText("");
+                            serviceSpinner.setSelection(0);
+
+                        } else {
+                            // Handle the error case
+                            // ...
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<PostModel> call, Throwable t) {
-                // Handle the failure case
+                    @Override
+                    public void onFailure(Call<PostModel> call, Throwable t) {
+                        // Handle the failure case
+                        // ...
+                    }
+                });
+            } else {
+                // Image upload failed
+                // Handle the error case
                 // ...
             }
-        });
-
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception
+            // ...
+        }
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
