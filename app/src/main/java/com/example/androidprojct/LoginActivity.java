@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 pd.cancel();
-                // Handle failure scenario
+               Toast.makeText(LoginActivity.this,"cant login",Toast.LENGTH_LONG).show();
             }
         });
 

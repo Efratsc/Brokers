@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -87,13 +88,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 context.startActivity(intent);
             }
         });
-/*        holder.rate.setOnClickListener(new View.OnClickListener() {
+      holder.ratingBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+               // float rating=ratingbar.ge
                 // Handle rate view click event
             }
         });
-
+/*
         // Click listener for comment view
         holder.comment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +124,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         private Button connect;
         private int userId;
         private ImageView userprofile, postimage;
+        private RatingBar ratingBar;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,7 +132,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
             textpost = itemView.findViewById(R.id.postText);
             userprofile = itemView.findViewById(R.id.userimage);
             postimage = itemView.findViewById(R.id.postimage);
-//            rate = itemView.findViewById(R.id.rate);
+           ratingBar = itemView.findViewById(R.id.ratingBar);
            // comment = itemView.findViewById(R.id.connect);
             connect=itemView.findViewById(R.id.connects);
         }

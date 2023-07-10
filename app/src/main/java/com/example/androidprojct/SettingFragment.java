@@ -1,11 +1,11 @@
 package com.example.androidprojct;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Patterns;
@@ -49,7 +49,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     }
     private void updateProfile() {
         String email = editTextEmail.getText().toString().trim();
-        String name = editTextName.getText().toString().trim();
+        String firstName = editTextName.getText().toString().trim();
         String phone = editTextphonenumber.getText().toString().trim();
 
         if (email.isEmpty()) {
@@ -64,7 +64,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        if (name.isEmpty()) {
+        if (firstName.isEmpty()) {
             editTextName.setError("Name required");
             editTextName.requestFocus();
             return;
@@ -75,30 +75,33 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             editTextphonenumber.requestFocus();
             return;
         }
-        User user=SharedPreferenceManager.getInstance(getActivity()).getUser();
-       /* Call<LoginResponse> call=RetrofitClient
-                .getInstance()
-                .getApi().updateUser(user.getId(),
-                        email,
-                        name,
-                        phone);
-        call.enqueue(new Callback<LoginResponse>() {
+        User user = SharedPreferenceManager.getInstance(getActivity()).getUser();
+
+        Call<UserResponse> call = RetrofitClient.getInstance().getApi().updateUser(
+                new User(user.getId(),email, phone,firstName));
+
+        call.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful()) {
+                    UserResponse userResponse = response.body();
+                    if (userResponse != null) {
+                        Toast.makeText(getActivity(), userResponse.getMessage(), Toast.LENGTH_LONG).show();
 
-                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-
-                if (!response.body().isError()) {
-                    SharedPreferenceManager.getInstance(getActivity()).saveUser(response.body().getUser());
+                        if (!userResponse.isError()) {
+                            SharedPreferenceManager.getInstance(getActivity()).saveUser(userResponse.getUser());
+                        }
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Failed to update user", Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network request failed", Toast.LENGTH_LONG).show();
             }
-        });*/
+        });
     }
     private void updatePassword() {
         String currentpassword = editTextCurrentPassword.getText().toString().trim();
@@ -142,7 +145,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-    /*private void deleteUser() {
+    private void deleteUser() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Are you sure?");
         builder.setMessage("This action is irreversible...");
@@ -185,7 +188,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         AlertDialog ad = builder.create();
         ad.show();
     }
-*/
+
     @Override
     public void onClick(View v) {
             switch (v.getId()) {

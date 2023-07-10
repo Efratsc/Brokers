@@ -18,12 +18,19 @@ public class PostModel {
 
 
 
-    public PostModel(int id, int user_id,String post_text,int service_id, String post_image) {
-        this.id = id;
+    public PostModel(int id,int user_id,String post_text,int service_id, String post_image) {
+        this.id=id;
         this.user_id=user_id;
         this.post_text = post_text;
         this.service_id=service_id;
          this.post_image = post_image;
+    }
+    public PostModel(int id,int user_id,String post_text,int service_id) {
+        this.id=id;
+        this.user_id=user_id;
+        this.post_text = post_text;
+        this.service_id=service_id;
+
     }
 
     public int getId() {

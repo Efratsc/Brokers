@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 
 import com.example.androidprojct.models.Connections;
 import com.example.androidprojct.models.PostModel;
+import com.example.androidprojct.models.Transaction;
 import com.example.androidprojct.models.User;
 
 import retrofit2.Call;
@@ -46,60 +47,79 @@ public class TermsAndConditionsActivity extends AppCompatActivity {
     }
     private void connectToUser(int userId) {
         // Create an instance of the RetrofitClient
-        RetrofitClient retrofitClient = RetrofitClient.getInstance();
+       /* RetrofitClient retrofitClient = RetrofitClient.getInstance();
 
         // Get the API interface
         Api api = retrofitClient.getApi();
-        //PostModel postModel = new PostModel(1, 2, postUserId, "Sample post text", "https://example.com/image.jpg");
-        // Create a new instance of Connections with the necessary data
-        Connections connection = new Connections(0, getCurrentUserID(this), userId, "type");
 
-        // Make the API call to create the connection
-        Call<Connections> call = api.createConnection(connection);
+        // Deduct 100 birr from the user's balance
+        Call<Transaction> transactionCall = api.createTransaction(getCurrentUserID(), "deduction");
 
-        call.enqueue(new Callback<Connections>() {
+        transactionCall.enqueue(new Callback<Transaction>() {
             @Override
-            public void onResponse(Call<Connections> call, Response<Connections> response) {
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
                 if (response.isSuccessful()) {
-                    // Connection successful, retrieve the posted user information
-                    int postedUserId = response.body().getUserId2();
+                    // Deduction successful, make the connection
+                    // Create a new instance of Connections with the necessary data
+                    Connections connection = new Connections(0, getCurrentUserID(this), userId, "type");
 
-                    // Call the API to get the user details
-                    Call<User> userCall = api.getUserById(postedUserId);
+                    // Make the API call to create the connection
+                    Call<Connections> calls = api.createConnection(connection);
 
-                    userCall.enqueue(new Callback<User>() {
+                    calls.enqueue(new Callback<Connections>() {
                         @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
+                        public void onResponse(Call<Connections> call, Response<Connections> response) {
                             if (response.isSuccessful()) {
+                                // Connection successful, retrieve the posted user information
+                                int postedUserId = response.body().getUserId2();
 
-                                User postedUser = response.body();
+                                // Call the API to get the user details
+                                Call<User> userCall = api.getUserById(postedUserId);
 
-                                // Pass the user details to the next activity using intent extras
-                                Intent intent = new Intent(TermsAndConditionsActivity.this, PostedUserDetailActivity.class);
-                                intent.putExtra("postedUser", (CharSequence) postedUser);
-                                startActivity(intent);
+                                userCall.enqueue(new Callback<User>() {
+                                    @Override
+                                    public void onResponse(Call<User> call, Response<User> response) {
+                                        if (response.isSuccessful()) {
+
+                                            User postedUser = response.body();
+
+                                            // Pass the user details to the next activity using intent extras
+                                            Intent intent = new Intent(TermsAndConditionsActivity.this, PostedUserDetailActivity.class);
+                                            intent.putExtra("postedUser", (CharSequence) postedUser);
+                                            startActivity(intent);
+                                        } else {
+                                            // Handle unsuccessful API response
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<User> call, Throwable t) {
+                                        // Handle API call failure
+                                    }
+                                });
                             } else {
                                 // Handle unsuccessful API response
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                        public void onFailure(Call<Connections> call, Throwable t) {
                             // Handle API call failure
                         }
                     });
                 } else {
-                    // Handle unsuccessful API response
+                    // Handle unsuccessful deduction response
                 }
             }
 
             @Override
-            public void onFailure(Call<Connections> call, Throwable t) {
-                // Handle API call failure
+            public void onFailure(Call<Transaction> call, Throwable t) {
+                // Handle deduction API call failure
             }
         });
     }
 
-}
 
+}
+*/}}
 

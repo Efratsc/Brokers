@@ -9,11 +9,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +56,8 @@ public class PostActivity extends AppCompatActivity {
     CardView cardView;
     int SELECT_IMAGE_CODE = 1;
     Uri uri;
+    int service_id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,13 +83,6 @@ public class PostActivity extends AppCompatActivity {
                 createPost();
                 Intent intent = new Intent(PostActivity.this, ProfileActivity.class);
                 startActivity(intent);
-                /*HomeFragment fragment = new HomeFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.act_post, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();*/
-
             }
         });
         cardView.setOnClickListener(new View.OnClickListener() {
@@ -100,81 +98,12 @@ public class PostActivity extends AppCompatActivity {
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_IMAGE_CODE);
     }
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater=getMenuInflater();
-        menuInflater.inflate(R.menu.create_post_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemid = item.getItemId();
-        if (itemid == R.id.post) {
-            EditText postEditText = findViewById(R.id.editpost);
-            String postText = postEditText.getText().toString();
-            int userId = getCurrentUserID(this);
-            String imageUri = uri.toString();
-            PostModel newPost = new PostModel(0, 0, userId, postText,imageUri);
-
-            Call<PostModel> call = RetrofitClient.getInstance().getApi().createPost(newPost);
-            call.enqueue(new Callback<PostModel>() {
-                @Override
-                public void onResponse(Call<PostModel> call, Response<PostModel> response) {
-                    if (response.isSuccessful()) {
-                        PostModel createdPost = response.body();
-                        // Handle the created post as needed
-                        // ...
-                    } else {
-                        // Handle the error case
-                        if (response.code() == 400) {
-                            // Bad Request
-                            String errorMessage = "Invalid request. Please check your input.";
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        } else if (response.code() == 401) {
-                            // Unauthorized
-                            String errorMessage = "You are not authorized to perform this action.";
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                            // You can also redirect the user to the login screen if needed
-                            // startActivity(new Intent(PostActivity.this, LoginActivity.class));
-                        } else if (response.code() == 404) {
-                            // Not Found
-                            String errorMessage = "Requested resource not found.";
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        } else if (response.code() == 500) {
-                            // Internal Server Error
-                            String errorMessage = "Internal server error. Please try again later.";
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Other error cases
-                            String errorMessage = "An error occurred. Please try again.";
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PostModel> call, Throwable t) {
-                    // Handle the failure case
-                    // ...
-                }
-            });
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
-
     private void createPost() {
-        // Get the post text, user ID, and selected service
         EditText postEditText = findViewById(R.id.editpost);
         String postText = postEditText.getText().toString();
         int userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
-
         Spinner serviceSpinner = findViewById(R.id.serviceSpinner);
         String selectedService = serviceSpinner.getSelectedItem().toString();
-        int service_id = 0;
 
         switch (selectedService) {
             case "Maid":
@@ -191,79 +120,72 @@ public class PostActivity extends AppCompatActivity {
                 break;
         }
 
-        // Get the image file path
-        String imagePath = "C:/Users/efrat/OneDrive/Documents/api-node/Uploads"; // Replace with the actual image file path
+        if (uri != null) {
+            File imageFile = new File(getRealPathFromURI(uri));
+            String postImageName = userId + "_" + System.currentTimeMillis() + ".jpg";
+            String imageUploadUrl = "http://localhost:3000/image/" + postImageName;
+            RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), imageFile);
+            MultipartBody.Part photoPart = MultipartBody.Part.createFormData("post_image", postImageName, imageRequestBody);
 
-        // Upload the image file to the folder
-        File imageFile = new File(imagePath);
-        String fileName = imageFile.getName();
+            RequestBody postTextRequestBody = RequestBody.create(MediaType.parse("text/plain"), postText);
+            RequestBody userIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(userId));
+            RequestBody serviceIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(service_id));
+            RequestBody imageNameRequestBody = RequestBody.create(MediaType.parse("text/plain"), postImageName);
 
-        OkHttpClient httpClient = new OkHttpClient();
+            Call<PostModel> createPostCall = RetrofitClient.getInstance().getApi().createPost(
+                    postTextRequestBody,
+                    userIdRequestBody,
+                    serviceIdRequestBody,
+                    imageNameRequestBody,
+                    photoPart
+            );
 
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("post_image", fileName, RequestBody.create(MediaType.parse("image/jpeg"), imageFile))
-                .build();
 
-        Request request = new Request.Builder()
-                .url("http://localhost:3000/image")
-                .post(requestBody)
-                .build();
+            createPostCall.enqueue(new Callback<PostModel>() {
+                @Override
+                public void onResponse(Call<PostModel> call, Response<PostModel> response) {
+                    if (response.isSuccessful()) {
+                        PostModel createdPost = response.body();
+                        int postId = createdPost.getId();
+                        String postText = createdPost.getPost_text();
+                        postEditText.setText("");
+                        serviceSpinner.setSelection(0);
+                        int userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
 
-        try (okhttp3.Response response = httpClient.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                // Image upload successful
-                // Store the file name in the database
-                String imageName = fileName;
-
-                // Create the new post object
-                PostModel newPost = new PostModel(0, userId, postText, service_id, imageName);
-
-                // Call the API to create the post
-                Call<PostModel> call = RetrofitClient.getInstance().getApi().createPost(newPost);
-                call.enqueue(new Callback<PostModel>() {
-                    @Override
-                    public void onResponse(Call<PostModel> call, Response<PostModel> response) {
-                        if (response.isSuccessful()) {
-                            PostModel createdPost = response.body();
-                            int postId = createdPost.getId(); // Get the ID of the created post
-                            String postText = createdPost.getPost_text(); // Get the text of the created post
-                            String imageName = createdPost.getPost_image(); // Get the image name of the created post
-
-                            // Example: Display a toast message with the post details
-                            String message = "Post created with ID: " + postId + "\nText: " + postText + "\nImage: " + imageName;
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-
-                            // Example: Refresh the post list to display the new post
-                            //refreshPostList();
-
-                            // Example: Reset the input fields
-                            postEditText.setText("");
-                            serviceSpinner.setSelection(0);
-
-                        } else {
-                            // Handle the error case
-                            // ...
+                    } else {
+                        String errorMessage = "";
+                        try {
+                            if (response.errorBody() != null) {
+                                errorMessage = response.errorBody().string();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+                        Toast.makeText(PostActivity.this, "Failed to create a post: " + errorMessage, Toast.LENGTH_LONG).show();
+                        Log.e("PostActivity", "Failed to create a post: " + errorMessage);
                     }
 
-                    @Override
-                    public void onFailure(Call<PostModel> call, Throwable t) {
-                        // Handle the failure case
-                        // ...
-                    }
-                });
-            } else {
-                // Image upload failed
-                // Handle the error case
-                // ...
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle the exception
-            // ...
+                }
+
+                @Override
+                public void onFailure(Call<PostModel> call, Throwable t) {
+                    Toast.makeText(PostActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Toast.makeText(PostActivity.this, "Please select a photo", Toast.LENGTH_LONG).show();
         }
     }
+    private String getRealPathFromURI(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return filePath;
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
