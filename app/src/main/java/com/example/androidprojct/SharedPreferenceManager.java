@@ -79,8 +79,13 @@ public class SharedPreferenceManager {
         editor.apply();
     }
     public static int getCurrentUserID(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getInt("id", -1);
+        // Get the shared preferences object
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        // Get the user ID from the shared preferences file
+        int uid = sharedPreferences.getInt("user_id", -1);
+
+        return uid;
     }
     public List<PostModel> getPosts() {
         List<PostModel> postList = new ArrayList<>();

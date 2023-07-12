@@ -62,7 +62,7 @@ public interface Api {
     @Multipart
     @POST("posts")
     Call<PostModel> createPost(
-            @Part("user_id") RequestBody userId,
+            @Part("user_id") int userId,
             @Part("post_text") RequestBody postText,
             @Part("service_id") RequestBody serviceId,
             @Part("post_image") RequestBody imageName,

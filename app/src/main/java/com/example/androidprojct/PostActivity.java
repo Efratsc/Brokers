@@ -57,6 +57,7 @@ public class PostActivity extends AppCompatActivity {
     int SELECT_IMAGE_CODE = 1;
     Uri uri;
     int service_id = 0;
+    int userId = getCurrentUserID(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class PostActivity extends AppCompatActivity {
     private void createPost() {
         EditText postEditText = findViewById(R.id.editpost);
         String postText = postEditText.getText().toString();
-        int userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
+        userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
         Spinner serviceSpinner = findViewById(R.id.serviceSpinner);
         String selectedService = serviceSpinner.getSelectedItem().toString();
 
@@ -123,6 +124,7 @@ public class PostActivity extends AppCompatActivity {
         if (uri != null) {
             File imageFile = new File(getRealPathFromURI(uri));
             String postImageName = userId + "_" + System.currentTimeMillis() + ".jpg";
+            Log.d("imagename",postImageName);
             String imageUploadUrl = "http://localhost:3000/image/" + postImageName;
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), imageFile);
             MultipartBody.Part photoPart = MultipartBody.Part.createFormData("post_image", postImageName, imageRequestBody);
@@ -131,10 +133,11 @@ public class PostActivity extends AppCompatActivity {
             RequestBody userIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(userId));
             RequestBody serviceIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(service_id));
             RequestBody imageNameRequestBody = RequestBody.create(MediaType.parse("text/plain"), postImageName);
-
+            Log.d("imgid",String.valueOf(userId));
+            Log.d("serviceid",String.valueOf(service_id));
             Call<PostModel> createPostCall = RetrofitClient.getInstance().getApi().createPost(
+                    userId,
                     postTextRequestBody,
-                    userIdRequestBody,
                     serviceIdRequestBody,
                     imageNameRequestBody,
                     photoPart
@@ -151,7 +154,6 @@ public class PostActivity extends AppCompatActivity {
                         postEditText.setText("");
                         serviceSpinner.setSelection(0);
                         int userId = SharedPreferenceManager.getCurrentUserID(getApplicationContext());
-
                     } else {
                         String errorMessage = "";
                         try {
@@ -164,7 +166,6 @@ public class PostActivity extends AppCompatActivity {
                         Toast.makeText(PostActivity.this, "Failed to create a post: " + errorMessage, Toast.LENGTH_LONG).show();
                         Log.e("PostActivity", "Failed to create a post: " + errorMessage);
                     }
-
                 }
 
                 @Override

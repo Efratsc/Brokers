@@ -52,24 +52,21 @@ public class UsersFragment extends Fragment {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPostsByServiceId(1); // Pass the appropriate service ID
+                getPostsByServiceId(1);
             }
         });
-
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getPostsByServiceId(2); // Pass the appropriate service ID
             }
         });
-
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getPostsByServiceId(3); // Pass the appropriate service ID
             }
         });
-
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,28 +75,18 @@ public class UsersFragment extends Fragment {
         });
     }
     private void getPostsByServiceId(int serviceId) {
-        // Call your API or retrieve posts from Shared Preferences based on the service ID
         Call<PostResponse> call = RetrofitClient.getInstance().getApi().getPostsByServiceId(serviceId);
         call.enqueue(new Callback<PostResponse>() {
-
 
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.isSuccessful()) {
-                        // Get the response body
                         PostResponse postResponse = response.body();
-
-                        // Convert the response to a string
                         String responseString = new Gson().toJson(postResponse);
-
-                        // Log the response
                         Log.d("API Response", "Response: " + responseString);
-
-                        // Parse the response and update UI
                         if (postResponse != null) {
                             if (postResponse.isError()) {
-                                // Handle error response
                                 Toast.makeText(getActivity(), "Error: " + postResponse.isError(), Toast.LENGTH_SHORT).show();
                             } else {
                                 List<PostModel> posts = postResponse.getPosts();

@@ -17,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.androidprojct.models.PostModel;
 import com.squareup.picasso.Picasso;
 
@@ -47,6 +49,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
        // holder.username.setText(post.getUsername());
         holder.textpost.setText(post.getPost_text());
+        Glide.with(holder.postimage.getContext())
+                        .load("http://172.4.243.235:3000/image/"+post.getPost_image())
+                                .apply(new RequestOptions().override(300,200))
+                                        .centerCrop()
+                                                .into(holder.postimage);
         holder.bind(post);
 
         // Load user profile image using Picasso library
