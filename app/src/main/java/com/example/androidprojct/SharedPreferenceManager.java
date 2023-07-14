@@ -3,6 +3,7 @@ package com.example.androidprojct;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class SharedPreferenceManager {
     private static final String SHARED_PREF_NAME = "my_shared_preff";
-
+    private static final String KEY_USER_ID = "user_id";
     private static SharedPreferenceManager mInstance;
     private Context mCtx;
     private SharedPreferenceManager(Context mCtx) {
@@ -48,9 +49,16 @@ public class SharedPreferenceManager {
         editor.apply();
 
     }
-    public boolean isLoggedIn() {
+    public boolean isLoggedIn(int userId) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getInt("id", -1) != -1;
+        return sharedPreferences.getInt("id", -1) == userId;
+    }
+    public void userLogin(int userId) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_USER_ID, userId);
+        editor.apply();
+        Log.d("SharedPreferenceManager", "User ID saved in SharedPreferences: " + userId);
     }
     public User getUser() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -79,12 +87,11 @@ public class SharedPreferenceManager {
         editor.apply();
     }
     public static int getCurrentUserID(Context context) {
-        // Get the shared preferences object
-        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-        // Get the user ID from the shared preferences file
+        SharedPreferences sharedPreferences = null;
+        if (context != null) {
+            sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        }
         int uid = sharedPreferences.getInt("user_id", -1);
-
         return uid;
     }
     public List<PostModel> getPosts() {

@@ -38,10 +38,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
-
-
     }
 
     @Override
@@ -50,20 +47,9 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.postrecicler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         TextView textPost = view.findViewById(R.id.textpost);
-        /*textPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start the PostActivity
-                Intent intent = new Intent(getActivity(), PostActivity.class);
-                startActivity(intent);
-            }
-        });*/
-        // Set up the adapter
         postAdapter = new PostAdapter(getActivity());
-        //rec.setAdapter(postAdapter);
         CardView cardView=view.findViewById(R.id.goCreatePost);
         rec=view.findViewById(R.id.postrecicler);
-
         rec.setLayoutManager(new LinearLayoutManager(getActivity()));
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,21 +68,18 @@ public class HomeFragment extends Fragment {
                     if (postResponse != null) {
                          //List<PostModel>posts = postResponse.getPosts();
                        // Toast.makeText(getActivity(), Integer.toString(postResponse.size()), Toast.LENGTH_SHORT).show();
-
                         // Set the retrieved posts to the adapter
                         postAdapter = new PostAdapter(getActivity());
                         //postAdapter= new PostAdapter(get);
                         postAdapter.setPosts(postResponse);
                         recyclerView.setAdapter(postAdapter);
-                       // postAdapter.notifyDataSetChanged();
+                        postAdapter.notifyDataSetChanged();
                     } else {
                         // If the response doesn't have posts, retrieve posts from SharedPreferenceManager
                         SharedPreferenceManager sharedPreferenceManager = SharedPreferenceManager.getInstance(getActivity());
                         posts = sharedPreferenceManager.getPosts();
                         if (posts != null) {
                             postAdapter.setPosts(posts);
-
-
                         } else {
                             Toast.makeText(getActivity(), "No posts available", Toast.LENGTH_SHORT).show();
                         }
@@ -114,7 +97,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<PostModel>> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.i("MainActivity", t.getMessage());
             }
         });

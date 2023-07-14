@@ -1,7 +1,7 @@
 package com.example.androidprojct;
 
 import com.example.androidprojct.models.Connections;
-import com.example.androidprojct.models.Login;
+import com.example.androidprojct.models.Logins;
 import com.example.androidprojct.models.PostModel;
 import com.example.androidprojct.models.Transaction;
 import com.example.androidprojct.models.User;
@@ -37,28 +37,36 @@ public interface Api {
             @Field("first_name") String firstName
     );
 
-
-    // Example: Delete a user
     @DELETE("users/{id}")
     Call<DefaultResponse> deleteUser(@Path("id") int id);
+
     @GET("ratings/{id}")
     Call<UserRating> getRatingById(@Path("id") int id);
+
     @GET("login")
-    Call<Login> getAllLogins();
+    Call<Logins> getAllLogins();
+
     @POST("transactions")
     Call<Transaction> createTransaction(@Body Transaction transaction);
+
     @GET("login/{id}")
-    Call<Login> getLoginById(@Path("id") int id);
+    Call<Logins> getLoginById(@Path("id") int id);
+
     @GET("users/{id}")
     Call<User> getUserById(@Path("id") int id);
+
     @GET("login/username/{username}")
     Call<LoginResponse> getLoginByUsername(@Path("username") String username);
+
     @GET("posts")
     Call<List<PostModel>> getPosts();
+
     @POST("/connections")
     Call<Connections> createConnection(@Body Connections connection);
+
     @POST("posts")
     Call<PostModel> createPost(@Body PostModel post);
+
     @Multipart
     @POST("posts")
     Call<PostModel> createPost(
@@ -73,14 +81,8 @@ public interface Api {
     Call<PostModel> createPostWithPhoto(@Body PostModel post, @Part MultipartBody.Part photo);
 
     @GET("posts/service/{service_id}")
-    Call<PostResponse> getPostsByServiceId(@Path("service_id") int serviceId);
+    Call<List<PostModel>> getPostsByServiceId(@Path("service_id") int serviceId);
+
     @PUT("users/{id}")
     Call<UserResponse> updateUser(User user);
-
-
-    //@GET("posts/service/{id}")
-    //Call<PostResponse> getPostsByServiceId(@Path("id") int serviceId);
-
-
-
 }

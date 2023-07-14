@@ -65,14 +65,17 @@ public class Onboarding extends AppCompatActivity {
     }
     protected void onStart() {
         super.onStart();
-        if(SharedPreferenceManager.getInstance(this).isLoggedIn()){
+
+        int userId = SharedPreferenceManager.getInstance(this).getCurrentUserID(this);
+
+        if (SharedPreferenceManager.getInstance(this).isLoggedIn(userId)) {
             Intent intent = new Intent(this, ProfileActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
-
-
     }
+
+
     public void setUpIndicatior(int postion){
         dots=new TextView[4];
         mDotlayout.removeAllViews();

@@ -31,6 +31,7 @@ public class UsersFragment extends Fragment {
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private PostModel postModel;
+
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,65 +59,62 @@ public class UsersFragment extends Fragment {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPostsByServiceId(2); // Pass the appropriate service ID
+                getPostsByServiceId(2);
             }
         });
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPostsByServiceId(3); // Pass the appropriate service ID
+                getPostsByServiceId(3);
             }
         });
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getPostsByServiceId(5); // Pass the appropriate service ID
+                getPostsByServiceId(4);
             }
         });
     }
-    private void getPostsByServiceId(int serviceId) {
-        Call<PostResponse> call = RetrofitClient.getInstance().getApi().getPostsByServiceId(serviceId);
-        call.enqueue(new Callback<PostResponse>() {
 
+    private void getPostsByServiceId(int serviceId) {
+        Api api = RetrofitClient.getInstance().getApi();
+      serviceId = 1;
+        int postId = 2;
+
+        api.getPostsByServiceId(serviceId).enqueue(new Callback<List<PostModel>>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(Call<List<PostModel>> call, Response<List<PostModel>> response) {
                 if (response.isSuccessful()) {
-                    if (response.isSuccessful()) {
-                        PostResponse postResponse = response.body();
-                        String responseString = new Gson().toJson(postResponse);
-                        Log.d("API Response", "Response: " + responseString);
-                        if (postResponse != null) {
-                            if (postResponse.isError()) {
-                                Toast.makeText(getActivity(), "Error: " + postResponse.isError(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                List<PostModel> posts = postResponse.getPosts();
-                                if (posts != null && !posts.isEmpty()) {
-                                    // Handle array response
-                                    // Process the list of posts
-                                } else {
-                                    PostModel post = (PostModel) postResponse.getPosts();
-                                    if (post != null) {
-                                        // Handle object response
-                                        // Process the single post
-                                    } else {
-                                        // Handle empty response
-                                        Toast.makeText(getActivity(), "No posts available", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
+                    List<PostModel> posts = response.body();
+                    if (posts != null && !posts.isEmpty()) {
+                        // filter the list to find the post with the desired ID
+                        PostModel post = null;
+                        for (PostModel p : posts) {
+                            if (p.getId() == postId) {
+                                post = p;
+                                //postAdapter = new PostAdapter(getActivity());
+                                //postAdapter= new PostAdapter(get);
+                                //postAdapter.setPosts(posts);
+                                //recyclerView.setAdapter(postAdapter);
+                                break;
                             }
+                        }
+                        if (post != null) {
+                            // do something with the post
                         } else {
-                            // Handle null response
-                            Toast.makeText(getActivity(), "Null response", Toast.LENGTH_SHORT).show();
+                            // post with the specified ID not found
                         }
                     } else {
-                        // Handle unsuccessful response
-                        Toast.makeText(getActivity(), "Failed to retrieve posts. Error code: " + response.code(), Toast.LENGTH_SHORT).show();
+                        // no posts available for the specified service ID
                     }
+                } else {
+                    // handle unsuccessful response
                 }
             }
+
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
-                // Handle failure by retrieving posts from SharedPreferences
+            public void onFailure(Call<List<PostModel>> call, Throwable t) {
+                // handle failure by retrieving posts from SharedPreferences
                 List<PostModel> storedPosts = SharedPreferenceManager.getInstance(requireContext()).getPosts();
                 if (storedPosts != null && !storedPosts.isEmpty()) {
                     postAdapter.setPosts(storedPosts);
@@ -126,10 +124,8 @@ public class UsersFragment extends Fragment {
                     Log.e("API Error", "Failed to retrieve posts", t);
                 }
             }
-
-
-
         });
     }
 
 }
+

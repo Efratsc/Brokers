@@ -1,15 +1,14 @@
 package com.example.androidprojct;
 
-import com.example.androidprojct.models.Login;
-import com.example.androidprojct.models.User;
+import com.example.androidprojct.models.Logins;
 
 public class LoginResponse {
 
     private boolean error;
-    private String message;
-    private Login login;
+    private String message; 
+    private Logins login;
 
-    public LoginResponse(boolean error, String message, Login login) {
+    public LoginResponse(boolean error, String message, Logins login) {
         this.error = error;
         this.message = message;
         this.login=login;
@@ -25,7 +24,7 @@ public class LoginResponse {
         return message;
     }
 
-    public Login getUser() {
+    public Logins getUser() {
         return login;
     }
 }

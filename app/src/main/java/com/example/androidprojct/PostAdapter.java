@@ -50,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
        // holder.username.setText(post.getUsername());
         holder.textpost.setText(post.getPost_text());
         Glide.with(holder.postimage.getContext())
-                        .load("http://172.4.243.235:3000/image/"+post.getPost_image())
+                        .load("http://172.20.10.9:3000/image/"+post.getPost_image())
                                 .apply(new RequestOptions().override(300,200))
                                         .centerCrop()
                                                 .into(holder.postimage);

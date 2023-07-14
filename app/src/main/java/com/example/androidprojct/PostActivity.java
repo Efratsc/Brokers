@@ -57,7 +57,7 @@ public class PostActivity extends AppCompatActivity {
     int SELECT_IMAGE_CODE = 1;
     Uri uri;
     int service_id = 0;
-    int userId = getCurrentUserID(this);
+    int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,7 @@ public class PostActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         serviceSpinner.setAdapter(adapter);
+        userId = SharedPreferenceManager.getCurrentUserID(this);
         fabCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +118,7 @@ public class PostActivity extends AppCompatActivity {
                 service_id = 3;
                 break;
             case "Housing":
-                service_id = 5;
+                service_id = 4;
                 break;
         }
 
@@ -133,10 +134,10 @@ public class PostActivity extends AppCompatActivity {
             RequestBody userIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(userId));
             RequestBody serviceIdRequestBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(service_id));
             RequestBody imageNameRequestBody = RequestBody.create(MediaType.parse("text/plain"), postImageName);
-            Log.d("imgid",String.valueOf(userId));
+            Log.d("user_id",String.valueOf(userId));
             Log.d("serviceid",String.valueOf(service_id));
             Call<PostModel> createPostCall = RetrofitClient.getInstance().getApi().createPost(
-                    userId,
+                    1,
                     postTextRequestBody,
                     serviceIdRequestBody,
                     imageNameRequestBody,
